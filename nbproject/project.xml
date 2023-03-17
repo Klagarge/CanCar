@@ -6,13 +6,15 @@
             <name>CanCar</name>
             <creation-uuid>785d1cef-bab4-407c-aec3-8f8938b8fb08</creation-uuid>
             <make-project-type>0</make-project-type>
-            <c-extensions/>
+            <c-extensions>c</c-extensions>
             <cpp-extensions/>
-            <header-extensions/>
+            <header-extensions>h</header-extensions>
             <asminc-extensions/>
             <sourceEncoding>ISO-8859-1</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList/>
+            <sourceRootList>
+                <sourceRootElem/>
+            </sourceRootList>
             <confList>
                 <confElem>
                     <name>default</name>
