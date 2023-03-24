@@ -74,10 +74,21 @@ void main(void)
     CS_SetHigh();
     
 
-        CAN_TX_MSGOBJ foo;
-        CAN_RX_MSGOBJ rxObj;
-        uint8_t txd[1];
-        uint8_t rxd[1];
+    CAN_TX_MSGOBJ foo;
+    CAN_RX_MSGOBJ rxObj;
+    uint8_t txd[1];
+    uint8_t rxd[1];
+    
+    CAN_FILTEROBJ_ID fObj;
+    fObj.ID = idCar;              // standard filter 11 bits value
+    fObj.SID11 = 0;               // 12 bits only used in FD mode
+    fObj.EXIDE = 0;               // assign to standard identifiers
+    
+    CAN_MASKOBJ_ID mObj;
+    mObj.MID = 0xF;             // check all the 11 bits in standard ID
+    mObj.MSID11 = 0;              // 12 bits only used in FD mode
+    mObj.MIDE = 1;                // match identifier size in filter
+    CanSetFilter(CAN_FILTER0,&fObj,&mObj);
         
 
         
