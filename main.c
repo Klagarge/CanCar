@@ -57,7 +57,7 @@ void main(void)
     // Use the following macros to:
 
     // Enable the Global Interrupts
-    //INTERRUPT_GlobalInterruptEnable();
+    INTERRUPT_GlobalInterruptEnable();
 
     // Disable the Global Interrupts
     //INTERRUPT_GlobalInterruptDisable();
@@ -68,6 +68,9 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
     
+    void timeToSendToCan();
+    
+    TMR0_SetInterruptHandler(timeToSendToCan);
     CanInit(1, CAN_250K_1M);
     
     uint8_t idCar = 0x8;
@@ -108,6 +111,12 @@ void main(void)
           }
         }
     }
+    
+    
+    /* TODO
+     * Add Timer0 @ 10ms for call CanSend
+     * add function for sending stuff with static local variable for ckeck if same than previous send
+     */
 }
 /**
  End of File
