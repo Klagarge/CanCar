@@ -71,11 +71,11 @@ void TMR0_Initialize(void)
     //Enable 16bit timer mode before assigning value to TMR0H
     T0CONbits.T08BIT = 0;
 
-    // TMR0H 252; 
-    TMR0H = 0xFC;
+    // TMR0H 236; 
+    TMR0H = 0xEC;
 
-    // TMR0L 23; 
-    TMR0L = 0x17;
+    // TMR0L 236; 
+    TMR0L = 0xEC;
 
 	
     // Load TMR0 value to the 16-bit reload variable
@@ -90,8 +90,8 @@ void TMR0_Initialize(void)
     // Set Default Interrupt Handler
     TMR0_SetInterruptHandler(TMR0_DefaultInterruptHandler);
 
-    // T0PS 1:256; T08BIT 16-bit; T0SE Increment_hi_lo; T0CS T0CKI; TMR0ON enabled; PSA not_assigned; 
-    T0CON = 0xBF;
+    // T0PS 1:32; T08BIT 16-bit; T0SE Increment_hi_lo; T0CS FOSC/4; TMR0ON enabled; PSA assigned; 
+    T0CON = 0x94;
 }
 
 void TMR0_StartTimer(void)
