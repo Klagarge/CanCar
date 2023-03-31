@@ -5,6 +5,8 @@
 #include <xc.h> 
 #include "can.h"
 
+const uint8_t idCar = 0x8;
+
 /************
  * FROM CAR *
  ***********/
@@ -35,7 +37,7 @@ struct CAR_STATE {
     uint8_t tempomat[2];
     uint8_t gearSel[1];
     uint8_t frontSensReq[2];
-    uint8_t  motorStatus[4];
+    uint8_t motorStatus[4];
     uint8_t brakePedal[1];
     uint8_t accelPedal[1];
     uint8_t contactKey[1];
@@ -62,8 +64,15 @@ typedef struct bufferType{
     uint8_t *value;
 } bufferType;
 
-bufferType bufferTxObj;
-void addOnBufferTxObj(bufferType); // TODO
+typedef struct stackType{
+    bufferType data;
+    struct stackType *next;
+}stackType;
+
+stackType * head = NULL;
+
+void pushTxObj(bufferType value);
+bool sendTxObj();
 
 void setLightFront(uint8_t power);
 

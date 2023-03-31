@@ -1,7 +1,8 @@
 #include "mcc_generated_files/mcc.h"
 #include "can.h"
 #include "car.h"
-bool sameArray(uint8_t *a1, uint8_t *a2, uint8_t size);
+void copyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size);
+bool checkAndCopyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size);
 void timerDone();
 bool timeToSendToCan;
 
@@ -32,7 +33,7 @@ void main(void) {
     TMR0_SetInterruptHandler(timerDone);
     CanInit(1, CAN_250K_1M);
     
-    uint8_t idCar = 0x8;
+//    uint8_t idCar = 0x8;
     CS_SetHigh();
     
 
@@ -46,7 +47,7 @@ void main(void) {
     foo.bF.ctrl.DLC = CAN_DLC_1; // number of byte to send
     CAN_RX_MSGOBJ rxObj;
     uint8_t txd[1];
-    uint8_t rxd[1];
+    uint8_t rxd[MAX_DATA_BYTES];
     
     CAN_FILTEROBJ_ID fObj;
     fObj.ID = idCar;              // standard filter 11 bits value
@@ -67,30 +68,36 @@ void main(void) {
         
         if(timeToSendToCan){
             timeToSendToCan = false;
-            foo.bF.id.ID = ((0x11 << 4) | idCar);
-            CanSend(&foo, txd);
-            // Pop stack with Can Send
+            
+            //foo.bF.id.ID = ((0x11 << 4) | idCar);
+            //CanSend(&foo, txd);
+            // Pop stack with Can Send          
+            while(sendTxObj()); // send all the stack
         }
         
         if(CanReceive(&rxObj,rxd) == 0) {
             switch(rxObj.bF.id.ID>>4){
                 
                 case ID_TEMPOMAT:
-                    if(sameArray(rxd, carState.tempomat, sizeof(carState.tempomat)){
-                        CAR_STATE.tempomat = rxd;
-                        // TODO copy array
+                    if(!checkAndCopyArray(rxd, carState.tempomat, rxObj.bF.ctrl.DLC)){
                         // make stuff
+                    }
+                    break;
+                case ID_ACCEL_PEDAL:
+                    if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
+                        setLightFront(carState.accelPedal[0]);
                     }
                     break;
                  
                 
             };
-            
+            /*
             if(rxObj.bF.id.ID == ((0x7 << 4) | idCar)) {
               foo.bF.id.ID = ((0x11 << 4) | idCar);
               // RTR + DLC
               txd[0] = rxd[0];
             }
+             */
         }
     }
     
@@ -104,13 +111,29 @@ void timerDone(){
     timeToSendToCan = true;
     TMR0_Reload();
     TMR0_StartTimer();
+    
 }
 
-bool sameArray(uint8_t *a1, uint8_t *a2, uint8_t size){
+void copyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size){
     for(uint8_t i = 0; i < size; i++){
-        if(a1[i] != a2[i]) return false;
+        persistantData[i] = tmpData[i];
     }
-    return true;
+}
+
+bool checkAndCopyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size) {
+    bool same = true;
+    for(uint8_t i = 0; i < size; i++){
+        if(tmpData[i] != persistantData[i]){
+            same = false;
+            break;
+        }
+    }
+    
+    if(!same){
+        copyArray(tmpData, persistantData, size);
+    }
+    
+    return same;
 }
 /**
  End of File
