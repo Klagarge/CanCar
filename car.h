@@ -28,6 +28,16 @@ const uint8_t idCar = 0x8;
  * TO CAR *
  *********/
 #define ID_LIGHT_FRONT      0x11
+#define ID_LIGHT_BACK        0x12
+#define ID_TIME             0x13
+#define ID_GEAR_LVL         0x14
+#define ID_AUDIO            0x15
+#define ID_PWR_MOTOR        0x16
+#define ID_POWER_BRAKE      0x17
+#define ID_TEMPO_OFF        0x18
+#define ID_KM_PULSE         0x19
+#define ID_AUTO_STEERING    0x1A
+#define ID_CAR_RST          0x1F
 
 struct CAR_STATE {
     
@@ -52,6 +62,16 @@ struct CAR_STATE {
      * TO CAR *
      *********/
     uint8_t lightFront[1];
+    uint8_t lightBack[1];
+    uint8_t time[3];
+    uint8_t gearLvl[1];
+    uint8_t audio[2];
+    uint8_t pwrMotor[2];
+    uint8_t pwrBrake[1];
+    uint8_t tempoOff[0];
+    uint8_t kmPulse[0];
+    uint8_t autoSteering[2];
+    uint8_t carRst[0];
     
     
     
