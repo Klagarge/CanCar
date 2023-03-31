@@ -1,9 +1,12 @@
 #include "mcc_generated_files/mcc.h"
 #include "can.h"
 #include "car.h"
+
+// functions prototype
 void copyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size);
 bool checkAndCopyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size);
 void timerDone();
+void canReceive();
 bool timeToSendToCan;
 
 /*
@@ -30,25 +33,15 @@ void main(void) {
     //INTERRUPT_PeripheralInterruptDisable();
     
     
-    TMR0_SetInterruptHandler(timerDone);
+    TMR0_SetInterruptHandler(timerDone); // timerDone is called on timer0 interrupt
+    timeToSendToCan = false; // initialise flag
+    TMR0_StartTimer(); // start timer0
+    
+    // initialise CAN
     CanInit(1, CAN_250K_1M);
+    CS_SetHigh(); // chip select
     
-//    uint8_t idCar = 0x8;
-    CS_SetHigh();
-    
-
-    CAN_TX_MSGOBJ foo;
-    foo.bF.ctrl.RTR = 0;
-    foo.bF.id.SID11 = 0;
-    foo.bF.ctrl.FDF = 0;
-    foo.bF.ctrl.IDE = 0;
-    foo.bF.ctrl.BRS = 0;
-    foo.bF.ctrl.ESI = 0;
-    foo.bF.ctrl.DLC = CAN_DLC_1; // number of byte to send
-    CAN_RX_MSGOBJ rxObj;
-    uint8_t txd[1];
-    uint8_t rxd[MAX_DATA_BYTES];
-    
+    // create and set a filter to CAN driver
     CAN_FILTEROBJ_ID fObj;
     fObj.ID = idCar;              // standard filter 11 bits value
     fObj.SID11 = 0;               // 12 bits only used in FD mode
@@ -59,23 +52,27 @@ void main(void) {
     mObj.MSID11 = 0;              // 12 bits only used in FD mode
     mObj.MIDE = 1;                // match identifier size in filter
     CanSetFilter(CAN_FILTER0,&fObj,&mObj);
-    
-    timeToSendToCan = false;
-    TMR0_StartTimer();
-        
+   
         
     while (1) {
         
-        if(timeToSendToCan){
-            timeToSendToCan = false;
-            
-            //foo.bF.id.ID = ((0x11 << 4) | idCar);
-            //CanSend(&foo, txd);
-            // Pop stack with Can Send          
+        if(timeToSendToCan){ // if flag is on
+            timeToSendToCan = false;         
             while(sendTxObj()); // send all the stack
         }
         
-        if(CanReceive(&rxObj,rxd) == 0) {
+        canReceive(); // handle the CAN messages reception
+    }
+}
+
+// handle the CAN messages reception
+// store the car data in registers
+void canReceive()
+{
+    CAN_RX_MSGOBJ rxObj;
+    uint8_t rxd[MAX_DATA_BYTES];
+    
+            if(CanReceive(&rxObj,rxd) == 0) {
             switch(rxObj.bF.id.ID>>4){
                 
                 case ID_TEMPOMAT:
@@ -83,43 +80,79 @@ void main(void) {
                         // make stuff
                     }
                     break;
-                case ID_ACCEL_PEDAL:
-                    if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
-                        setLightFront(carState.accelPedal[0]);
-                    }
-                    break;
                  
+                case ID_GEAR_SEL:
+                    if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_FRONT_SENS_REQ:  
+                    if(!checkAndCopyArray(rxd, carState.frontSensReq, rxObj.bF.ctrl.DLC));
+                    break;
                 
+                case ID_MOTOR_STATUS:
+                    if(!checkAndCopyArray(rxd, carState.motorStatus, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_BRAKE_PEDAL:
+                    if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_ACCEL_PEDAL:
+                     if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
+                        setLightFront(carState.accelPedal[0]); // set front light with accel pedal data
+                    }                   
+                    break;
+                    
+                case ID_CONTACT_KEY:
+                    if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC));
+                    break;
+                
+                case ID_STEERING_W_REQ:  
+                    if(!checkAndCopyArray(rxd, carState.steeringWReq, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_BROKEN_CAR:
+                    if(!checkAndCopyArray(rxd, carState.brokenCar, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_BAD_MESSAGE:
+                    if(!checkAndCopyArray(rxd, carState.badMessage, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_SLOPE_REQ:
+                    if(!checkAndCopyArray(rxd, carState.slopeReq, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_RACE:
+                    if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC));
+                    break;
+                    
+                case ID_CAR_ID:
+                    if(!checkAndCopyArray(rxd, carState.carID, rxObj.bF.ctrl.DLC));
+                    break;
+                    
             };
-            /*
-            if(rxObj.bF.id.ID == ((0x7 << 4) | idCar)) {
-              foo.bF.id.ID = ((0x11 << 4) | idCar);
-              // RTR + DLC
-              txd[0] = rxd[0];
-            }
-             */
+
         }
-    }
-    
-    
-    /* TODO
-     * Add Timer0 @ 10ms for call CanSend
-     * add function for sending stuff with static local variable for ckeck if same than previous send
-     */
-}
-void timerDone(){
-    timeToSendToCan = true;
-    TMR0_Reload();
-    TMR0_StartTimer();
-    
 }
 
+// Called on timer0 interrupt
+void timerDone(){
+    timeToSendToCan = true; // activate flag
+    
+    // reload timer
+    TMR0_Reload();
+    TMR0_StartTimer();
+}
+
+// copy tmpData in persistantData
 void copyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size){
     for(uint8_t i = 0; i < size; i++){
         persistantData[i] = tmpData[i];
     }
 }
 
+// if two arrays are different it copies tmpData in persistantData 
 bool checkAndCopyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size) {
     bool same = true;
     for(uint8_t i = 0; i < size; i++){
