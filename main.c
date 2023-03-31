@@ -82,7 +82,9 @@ void canReceive()
                     break;
                  
                 case ID_GEAR_SEL:
-                    if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC));
+                    if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC)){
+                        if(carState.contactKey[0]) defineMode();
+                    }
                     break;
                     
                 case ID_FRONT_SENS_REQ:  
@@ -99,12 +101,18 @@ void canReceive()
                     
                 case ID_ACCEL_PEDAL:
                      if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
-                        setLightFront(carState.accelPedal[0]); // set front light with accel pedal data
+                        //setLightFront(carState.accelPedal[0]); // set front light with accel pedal data
                     }                   
                     break;
                     
                 case ID_CONTACT_KEY:
-                    if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC));
+                    if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC)){
+                        if(carState.contactKey[0]) {
+                            start();
+                        } else {
+                            stop();
+                        }
+                    }
                     break;
                 
                 case ID_STEERING_W_REQ:  
