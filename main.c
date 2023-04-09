@@ -52,6 +52,8 @@ void main(void) {
     mObj.MSID11 = 0;              // 12 bits only used in FD mode
     mObj.MIDE = 1;                // match identifier size in filter
     CanSetFilter(CAN_FILTER0,&fObj,&mObj);
+    
+    initCar();
    
         
     while (1) {
@@ -83,7 +85,7 @@ void canReceive()
                  
                 case ID_GEAR_SEL:
                     if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC)){
-                        if(carState.contactKey[0]) defineMode();
+                        //if(carState.contactKey[0]) defineMode();
                     }
                     break;
                     
@@ -102,15 +104,16 @@ void canReceive()
                 case ID_ACCEL_PEDAL:
                      if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
                         //setLightFront(carState.accelPedal[0]); // set front light with accel pedal data
+                         pushFunction(setLightFront(carState.accelPedal[0]));
                     }                   
                     break;
                     
                 case ID_CONTACT_KEY:
                     if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC)){
                         if(carState.contactKey[0]) {
-                            start();
+                            //start();
                         } else {
-                            stop();
+                            //stop();
                         }
                     }
                     break;

@@ -8,7 +8,17 @@
 #include "car.h"
 
 CAR_STATE carState;
-
+/*
+void initCar(){
+    sAccelPedal.id = 0x7;
+    sAccelPedal.length = 1;
+    sAccelPedal.value = malloc(sAccelPedal.length);
+    
+    sLightFront.id = 0x11;
+    sLightFront.length = 1;
+    sLightFront.value = malloc(sLightFront.length);
+}
+*/
 CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
     CAN_TX_MSGOBJ msgObj;
     msgObj.bF.id.ID = ((id << 4) | idCar);
@@ -28,6 +38,13 @@ void pushTxObj(bufferType value) {
     temp->next = head;
     head = temp;
 }
+void pushFunction (carSetter fct) {
+    stackFunction *temp = malloc(sizeof(stackFunction));
+    temp->function = fct;
+    //temp->function(5,);
+    temp->next = headStack;
+    headStack = temp;
+}
 
 bool sendTxObj() {
     if(head == NULL) return false;
@@ -41,22 +58,42 @@ bool sendTxObj() {
     return true;
 }
 
+bool sendFunction(){
+    if(headStack == NULL) return false;
+    stackFunction *temp = headStack;
+    bufferType bf = temp->function;
+    headStack = headStack->next;
+    CanSend(bf.obj, bf.value);
+    free(temp)
+    return true;
+}
+
 /*****************
  * SET FUNCTIONS *
  ****************/
+
+/*
+int foobar(){
+    carSetter *foo;
+    carSetter lightFront;
+    foo[0](5,5);
+    foo[0] = lightFront(5,5);
+} */
 
 /**
  * Sets the headlights lightning level
  * @param power The value ?0? means no headlights, the value ?50? means headlights low beam and 100 means headlights high beam
  */
-void setLightFront(uint8_t power){
+bufferType setLightFront(uint8_t power){
     if(power != carState.lightFront[0]){
         carState.lightFront[0] = power;
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_LIGHT_FRONT, CAN_DLC_1);
         bufferObj.value = carState.lightFront;
         pushTxObj(bufferObj);
+        return bufferObj;
     }
+    return NULL;
 }
 
 /**

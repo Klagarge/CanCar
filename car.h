@@ -28,7 +28,7 @@ const uint8_t idCar = 0x8;
  * TO CAR *
  *********/
 #define ID_LIGHT_FRONT      0x11
-#define ID_LIGHT_BACK        0x12
+#define ID_LIGHT_BACK       0x12
 #define ID_TIME             0x13
 #define ID_GEAR_LVL         0x14
 #define ID_AUDIO            0x15
@@ -76,6 +76,15 @@ struct CAR_STATE {
     
     
 };
+typedef struct STD_CAR_STATE {
+    uint8_t *value;
+    uint8_t id;
+    uint8_t length;
+}STD_CAR_STATE;
+
+void initCar();
+STD_CAR_STATE sAccelPedal;
+STD_CAR_STATE sLightFront;
 typedef struct CAR_STATE CAR_STATE;
 
 extern CAR_STATE carState;
@@ -84,21 +93,32 @@ typedef struct bufferType{
     uint8_t *value;
 } bufferType;
 
+//typedef void (*carSetter)(uint8_t *value, uint8_t *carRegister);
+typedef void (*carSetter)(uint8_t value);
+typedef struct stackFunction {
+    carSetter function;
+    struct stackFunction *next;
+}stackFunction;
+
 typedef struct stackType{
     bufferType data;
     struct stackType *next;
 }stackType;
 
 stackType * head = NULL;
+stackFunction *headStack = NULL;
 
 void pushTxObj(bufferType value);
 bool sendTxObj();
 
+void pushFunction(carSetter function);
+bool sendFunction();
+
 /*****************
  * SET FUNCTIONS *
  ****************/
-void setLightFront(uint8_t power);
-void setLightFront(uint8_t power);
+bufferType setLightFront(uint8_t power);
+//void setLightFront(uint8_t power);
 void setLightBack(uint8_t power);
 void setTime(uint8_t hour, uint8_t minutes, bool colon);
 void setGearLevel(uint8_t level);
