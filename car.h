@@ -90,11 +90,34 @@ typedef struct stackType{
 }stackType;
 
 stackType * head = NULL;
+stackType * tail = NULL;
 
 void pushTxObj(bufferType value);
 bool sendTxObj();
 
+/*****************
+ * SET FUNCTIONS *
+ ****************/
 void setLightFront(uint8_t power);
+void setLightFront(uint8_t power);
+void setLightBack(uint8_t power);
+void setTime(uint8_t hour, uint8_t minutes, bool colon);
+void setGearLevel(uint8_t level);
+void setAudio(uint8_t power, bool drive);
+void setPowerMotor(uint8_t power, bool starter);
+void setPowerBrake(uint8_t power);
+void setTempoOff();
+void setKmPulse();
+void setAutoSteering(int8_t position, bool automatic);
+void setCarRst();
+
+/********************
+ * USEFUL FUNCTIONS *
+ *******************/
+char mode;
+void defineMode();
+void start();
+void stop();
 
 #endif	/* CAR_H */
 

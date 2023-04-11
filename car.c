@@ -25,8 +25,16 @@ CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
 void pushTxObj(bufferType value) {
     stackType *temp = (stackType*) malloc(sizeof(stackType));
     temp->data = value;
-    temp->next = head;
-    head = temp;
+    temp->next = NULL;
+    
+    // if it is the first node
+    if(head == NULL && tail == NULL) {
+        // make both head and tail points to the new node
+        head = tail = temp;
+    } else {
+        tail->next = temp;
+        tail = temp;
+    }
 }
 
 bool sendTxObj() {
@@ -34,6 +42,8 @@ bool sendTxObj() {
     
     stackType *temp = head;
     head = head->next;
+    
+    if(head == NULL) tail = NULL;
     
     CanSend(&temp->data.obj,temp->data.value);
     free(temp);
@@ -64,7 +74,7 @@ void setLightFront(uint8_t power){
  * @param power The value ?0? means no backlights, the value ?50? means backlights low beam and 100 means brake lights
  */
 void setLightBack(uint8_t power) {
-    if(power != carState.lightFront[0]){
+    if(power != carState.lightBack[0]){
         carState.lightBack[0] = power;
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_LIGHT_BACK, CAN_DLC_1);
@@ -122,16 +132,16 @@ void setGearLevel(uint8_t level){
 /**
  * Used for quiet mode in laboratories
  * @param power The motor audio level (0 to 100%)
- * @param starter The wheels drive (0: no drive, 1: drive wheels)
+ * @param drive The wheels drive (0: no drive, 1: drive wheels)
  */
-void setAudio(uint8_t power, bool starter){
+void setAudio(uint8_t power, bool drive){
     bool send = false;
     if(power != carState.audio[0]){
         carState.audio[0] = power;
         send = true;
     }
-    if(starter != carState.audio[1]){
-        carState.audio[2] = starter;
+    if(drive != carState.audio[1]){
+        carState.audio[1] = drive;
         send = true;
     }
     if(send){
@@ -154,7 +164,7 @@ void setPowerMotor(uint8_t power, bool starter){
         send = true;
     }
     if(starter != carState.pwrMotor[1]){
-        carState.pwrMotor[2] = starter;
+        carState.pwrMotor[1] = starter;
         send = true;
     }
     if(send){
@@ -232,4 +242,43 @@ void setCarRst(){
     pushTxObj(bufferObj);
 }
 
+
+
+/********************
+ * USEFUL FUNCTIONS *
+ *******************/
+
+void defineMode(){
+    switch(carState.gearSel[0]){
+        case 'P':
+            mode = 'P';
+            break;
+        case 'R':
+            mode = 'R';
+            break;
+        case 'N':
+            mode = 'N';
+            break;
+        case 'D':
+            mode = 'D';
+            break;
+        default:
+            mode = 'S';
+            break;
+    }
+}
+
+void start(){
+    setPowerMotor(12, true);
+    setLightFront(100);
+    setLightBack(50);
+    setAudio(50, false);
+}
+void stop(){
+    mode = 'S';
+    setPowerMotor(0, false);
+    setLightFront(0);
+    setLightBack(0);
+    setAudio(0, false);
+}
 
