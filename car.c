@@ -25,8 +25,16 @@ CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
 void pushTxObj(bufferType value) {
     stackType *temp = (stackType*) malloc(sizeof(stackType));
     temp->data = value;
-    temp->next = head;
-    head = temp;
+    temp->next = NULL;
+    
+    // if it is the first node
+    if(head == NULL && tail == NULL) {
+        // make both head and tail points to the new node
+        head = tail = temp;
+    } else {
+        tail->next = temp;
+        tail = temp;
+    }
 }
 
 bool sendTxObj() {
@@ -34,6 +42,8 @@ bool sendTxObj() {
     
     stackType *temp = head;
     head = head->next;
+    
+    if(head == NULL) tail = NULL;
     
     CanSend(&temp->data.obj,temp->data.value);
     free(temp);

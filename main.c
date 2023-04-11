@@ -96,7 +96,9 @@ void canReceive()
                     break;
                     
                 case ID_BRAKE_PEDAL:
-                    if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC));
+                    if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC)){
+                        //setLightBack(carState.brakePedal[0]);
+                    }
                     break;
                     
                 case ID_ACCEL_PEDAL:
