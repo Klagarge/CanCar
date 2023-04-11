@@ -90,6 +90,7 @@ typedef struct stackType{
 }stackType;
 
 stackType * head = NULL;
+stackType * tail = NULL;
 
 void pushTxObj(bufferType value);
 bool sendTxObj();
