@@ -248,37 +248,94 @@ void setCarRst(){
  * USEFUL FUNCTIONS *
  *******************/
 
-void defineMode(){
+void uFdefineMode(){
     switch(carState.gearSel[0]){
         case 'P':
             mode = 'P';
+            setGearLevel(0);
             break;
         case 'R':
             mode = 'R';
+            setGearLevel(0);
             break;
         case 'N':
             mode = 'N';
+            setGearLevel(0);
             break;
         case 'D':
             mode = 'D';
+            setGearLevel(0);
             break;
         default:
             mode = 'S';
+            setGearLevel(0);
             break;
     }
 }
 
-void start(){
+void uFstart(){
     setPowerMotor(12, true);
     setLightFront(100);
     setLightBack(50);
-    setAudio(50, false);
+    setAudio(50, true);
+    mode = 'P';
 }
-void stop(){
+void uFstop(){
     mode = 'S';
+    carState.gearLvl[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
+    setGearLevel(0); 
     setPowerMotor(0, false);
     setLightFront(0);
     setLightBack(0);
     setAudio(0, false);
+}
+
+void uFbrake(uint8_t power){
+    uint16_t rpm = carState.motorStatus[0];
+    rpm = (rpm<<8) + carState.motorStatus[1];
+    
+    int16_t speed = carState.motorStatus[2];
+    
+    if (power){
+        setLightBack(100);
+                
+        setPowerMotor(0, false);
+        
+        if(rpm <= 1500) setGearLevel(0);
+        
+    } else {
+        setLightBack(50);
+        
+        if(rpm == 0) setPowerMotor(12, true);
+    }
+    
+    setPowerBrake(power);
+}
+
+void uFaccel(uint8_t power){
+    if (carState.pwrBrake[0] > 5) return;
+    if(power < 12) power = 12;
+    setPowerMotor(power, false);
+    //if (mode == 'N' | 'P')
+    if (mode == 'R') {
+        setGearLevel(1);
+    }
+    if (mode == 'D') {
+        uint8_t gearLevel = carState.gearLvl[0];
+        uint16_t rpm = carState.motorStatus[0];
+        rpm = (rpm<<8) + carState.motorStatus[1];
+        
+        if(gearLevel == 0){
+            setGearLevel(1);
+        } else {
+            if(rpm >= 5000) {
+                gearLevel++;
+                if(gearLevel > 5) gearLevel = 5;
+                setGearLevel(gearLevel);
+            }
+        }
+    }
+
+    
 }
 

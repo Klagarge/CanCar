@@ -115,9 +115,11 @@ void setCarRst();
  * USEFUL FUNCTIONS *
  *******************/
 char mode;
-void defineMode();
-void start();
-void stop();
+void uFdefineMode();
+void uFstart();
+void uFstop();
+void uFbrake(uint8_t power);
+void uFaccel(uint8_t power);
 
 #endif	/* CAR_H */
 

@@ -58,7 +58,7 @@ void main(void) {
         
         if(timeToSendToCan){ // if flag is on
             timeToSendToCan = false;         
-            while(sendTxObj()); // send all the stack
+            sendTxObj();
         }
         
         canReceive(); // handle the CAN messages reception
@@ -83,7 +83,7 @@ void canReceive()
                  
                 case ID_GEAR_SEL:
                     if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC)){
-                        if(carState.contactKey[0]) defineMode();
+                        if(carState.contactKey[0]) uFdefineMode();
                     }
                     break;
                     
@@ -97,22 +97,23 @@ void canReceive()
                     
                 case ID_BRAKE_PEDAL:
                     if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC)){
-                        //setLightBack(carState.brakePedal[0]);
+                        if(mode != 'S') uFbrake(carState.brakePedal[0]);
                     }
+                    
                     break;
                     
                 case ID_ACCEL_PEDAL:
                      if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)){
-                        //setLightFront(carState.accelPedal[0]); // set front light with accel pedal data
+                        if(mode != 'S') uFaccel(carState.accelPedal[0]);
                     }                   
                     break;
                     
                 case ID_CONTACT_KEY:
                     if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC)){
                         if(carState.contactKey[0]) {
-                            start();
+                            uFstart();
                         } else {
-                            stop();
+                            uFstop();
                         }
                     }
                     break;
