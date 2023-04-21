@@ -9,7 +9,7 @@
     <IsLogFilterLINEnabled>FALSE</IsLogFilterLINEnabled>
     <IsLoggingEnabled>FALSE</IsLoggingEnabled>
     <IsMsgIntepretationEnabled>FALSE</IsMsgIntepretationEnabled>
-    <IsOverWriteEnabled>FALSE</IsOverWriteEnabled>
+    <IsOverWriteEnabled>TRUE</IsOverWriteEnabled>
     <DisplayTimeMode>SYSTEM</DisplayTimeMode>
     <DisplayNumericMode>FALSE</DisplayNumericMode>
     <LogOnConnect_CAN>FALSE</LogOnConnect_CAN>
@@ -86,13 +86,21 @@
       </ControllerSettings>
     </CAN_DIL_Section>
     <CAN_Signal_Watch>
+      <Message>
+        <Id>72</Id>
+        <Signal>RPM</Signal>
+      </Message>
+      <Message>
+        <Id>360</Id>
+        <Signal>Power</Signal>
+      </Message>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>HIDE</WindowPlacement>
-        <Top>70</Top>
-        <Left>10</Left>
-        <Right>500</Right>
-        <Bottom>300</Bottom>
+        <Top>314</Top>
+        <Left>831</Left>
+        <Right>1321</Right>
+        <Bottom>544</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
         <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
@@ -263,7 +271,7 @@
         <Width>879</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>1</IsAppend>
+      <IsAppend>0</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
@@ -363,7 +371,7 @@
         <Width>720</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>0</IsAppend>
+      <IsAppend>1</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
@@ -448,7 +456,7 @@
         <Width>734</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>0</IsAppend>
+      <IsAppend>1</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
