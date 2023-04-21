@@ -114,12 +114,11 @@ void setCarRst();
 /********************
  * USEFUL FUNCTIONS *
  *******************/
-char mode;
+char mode = 'S';
 void uFdefineMode();
 void uFstart();
 void uFstop();
-void uFbrake(uint8_t power);
-void uFaccel(uint8_t power);
+void uFmanageMotor(uint8_t brake, uint8_t accel);
 
 #endif	/* CAR_H */
 
