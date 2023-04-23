@@ -6,12 +6,28 @@
  * @param up if true, add one gear level
  * @return true if it change
  */
-bool rtChangeGearLevel (bool up, bool accel){
+bool rtChangeGearLevel (bool up, bool accel, uint16_t rpm){
+    static uint16_t lastRPM = 0;
+    static bool reducedRPM = true;
     uint8_t lastGearLevel = carState.gearLvl[0];
-    if(up){ // ++
+    if(up){
+        /******
+         * ++ *
+         *****/
         if(lastGearLevel >= 5) return false;
-        setGearLevel(lastGearLevel+1);
-    } else { // --
+        
+        if(reducedRPM){
+            reducedRPM = false;
+            lastRPM = rpm;
+            setGearLevel(lastGearLevel+1);
+        }
+        if((rpm < lastRPM-100) || (rpm == 0)) {
+            reducedRPM = true;
+        }
+    } else {
+        /******
+         * -- *
+         *****/
         if(lastGearLevel <= 0) return false;
         if(accel && (lastGearLevel <= 1)) return false;
         setGearLevel(lastGearLevel-1);
@@ -43,11 +59,12 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         if(rpm >= RPM_HIGH){
             // Reduce power motor if too many RPM and change GearLever if D mode
             lastAccel -= 2*sen;
-            if(mode == 'D') rtChangeGearLevel(true, true);
-        } else if((rpm <= RPM_LOW) && (mode == 'D')){
+        } else if((rpm <= RPM_CHANGE_LOW) && (mode == 'D')){
             // Reduce GearLevel in D mode if not enough 
-            rtChangeGearLevel(false, true);
-        } else if(mode == 'D'){
+            rtChangeGearLevel(false, true, rpm);
+        } else if((mode=='D') && (rpm >= RPM_CHANGE_HIGH)){
+            rtChangeGearLevel(true, true, rpm);
+        } else if(mode == 'D' && (speed == 0)){
             setGearLevel(1);
         }
         
@@ -78,7 +95,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
          ********/
         
         // not enough RPM -> reduce GearLevel
-        if(rpm < RPM_LOW) rtChangeGearLevel(false, false);
+        if(rpm < RPM_LOW) rtChangeGearLevel(false, false, rpm);
         
     } else if (rtAccel(accel, rpm, speed)) {
         /**********************
@@ -98,7 +115,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
             
         if((mode == 'R') || (mode=='D')){
             
-            if(speed == 0) setPowerBrake(100);
+            if(speed <= 5) setPowerBrake(100);
 
             // gearLevel at 0 if RPM is low in R & D mode
             if(rpm <= RPM_LOW) setGearLevel(0);

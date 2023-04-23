@@ -23,8 +23,7 @@ CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
     return msgObj;
 }
 
-bool pushTxObj(bufferType value) {
-    stackType *temp = (stackType*) malloc(sizeof(stackType));
+bool pushTxObj(bufferType value) {    stackType *temp = (stackType*) malloc(sizeof(stackType));
     if(temp==0){
         return false;
     }
