@@ -1,29 +1,22 @@
 #include "liveFct.h"
 #include "carLimites.h"
 
+static uint16_t lastLowRPM = 0;
+static bool increasedRPM = true;
+
 /**
  * Change actual gear level
  * @param up if true, add one gear level
  * @return true if it change
  */
-bool rtChangeGearLevel (bool up, bool accel, uint16_t rpm){
-    static uint16_t lastRPM = 0;
-    static bool reducedRPM = true;
+bool rtChangeGearLevel (bool up, bool accel){
     uint8_t lastGearLevel = carState.gearLvl[0];
     if(up){
         /******
          * ++ *
          *****/
         if(lastGearLevel >= 5) return false;
-        
-        if(reducedRPM){
-            reducedRPM = false;
-            lastRPM = rpm;
-            setGearLevel(lastGearLevel+1);
-        }
-        if((rpm < lastRPM-100) || (rpm == 0)) {
-            reducedRPM = true;
-        }
+        setGearLevel(lastGearLevel+1);
     } else {
         /******
          * -- *
@@ -49,7 +42,11 @@ bool rtBrake(uint8_t brake) {
 
 bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
     static int8_t lastAccel = 0;
+    static uint16_t lastHightRPM = 0;
+    static bool reducedRPM = true;
     const uint8_t sen = 10; // perfect value = 5, but put 10 for more fun
+    
+    if((rpm < lastHightRPM-100) || (rpm==0)) reducedRPM = true;
     
     if(/*rpm > RPM_LOW*/ accel >= 5){
         // Make an hysteresis for change power motor
@@ -59,13 +56,20 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         if(rpm >= RPM_HIGH){
             // Reduce power motor if too many RPM and change GearLever if D mode
             lastAccel -= 2*sen;
-        } else if((rpm <= RPM_CHANGE_LOW) && (mode == 'D')){
-            // Reduce GearLevel in D mode if not enough 
-            rtChangeGearLevel(false, true, rpm);
-        } else if((mode=='D') && (rpm >= RPM_CHANGE_HIGH)){
-            rtChangeGearLevel(true, true, rpm);
-        } else if(mode == 'D' && (speed == 0)){
-            setGearLevel(1);
+        } else if(mode=='D'){
+            // Reduce GearLevel in D mode if not enough
+            if((rpm<RPM_CHANGE_LOW) && increasedRPM){
+                increasedRPM = false;
+                lastLowRPM = rpm;
+                rtChangeGearLevel(false, true);
+            }
+            // Increse GearLevel in D mode if RPM are too high
+            if((rpm > RPM_CHANGE_HIGH) && reducedRPM){
+                reducedRPM = false;
+                lastHightRPM = rpm;
+                rtChangeGearLevel(true, true);
+            }
+            if(speed == 0) setGearLevel(0);
         }
         
         // Fix limit out of range
@@ -88,6 +92,8 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
     rpm = (rpm<<8) + carState.motorStatus[1];
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
+    
+    if(rpm>lastLowRPM+100) increasedRPM = true;
         
     if (rtBrake(brake)){
         /*********
@@ -95,7 +101,12 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
          ********/
         
         // not enough RPM -> reduce GearLevel
-        if(rpm < RPM_LOW) rtChangeGearLevel(false, false, rpm);
+        if((mode == 'D') && (rpm<RPM_CHANGE_LOW) && increasedRPM){
+            // If D mode, multiple gearLevel to reduce
+            increasedRPM = false;
+            lastLowRPM = rpm;
+            rtChangeGearLevel(false, false);
+        } else if((mode != 'D') && (rpm < RPM_LOW)) rtChangeGearLevel(false, false);
         
     } else if (rtAccel(accel, rpm, speed)) {
         /**********************
