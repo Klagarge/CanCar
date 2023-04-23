@@ -371,7 +371,7 @@
         <Width>720</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>1</IsAppend>
+      <IsAppend>0</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
@@ -456,7 +456,7 @@
         <Width>734</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>1</IsAppend>
+      <IsAppend>0</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
