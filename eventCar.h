@@ -6,6 +6,8 @@
 
 void evtStart();
 void evtStop();
+void evtTempomatStart();
+void evtTempomatStop();
 
 #endif	/* EVENTCAR_H */
 

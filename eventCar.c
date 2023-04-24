@@ -16,3 +16,11 @@ void evtStop(){
     setLightBack(0);
     setAudio(0, false);
 }
+
+void evtTempomatStart(){
+    
+}
+
+void evtTempomatStop(){
+    
+}

@@ -63,6 +63,7 @@ void main(void) {
     carState.motorStatus[1] = 0;
     carState.motorStatus[2] = 0;
     carState.motorStatus[3] = 0;
+    carState.tempomat[0] = 0;
    
         
     while (1) {
@@ -87,9 +88,7 @@ void canReceive() {
         switch(rxObj.bF.id.ID>>4){
 
             case ID_TEMPOMAT:
-                if(!checkAndCopyArray(rxd, carState.tempomat, rxObj.bF.ctrl.DLC)){
-                    // make stuff
-                }
+                checkAndCopyArray(rxd, carState.tempomat, rxObj.bF.ctrl.DLC);
                 break;
 
             case ID_GEAR_SEL:
@@ -99,7 +98,9 @@ void canReceive() {
                 break;
 
             case ID_FRONT_SENS_REQ:  
-                if(!checkAndCopyArray(rxd, carState.frontSensReq, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.frontSensReq, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_MOTOR_STATUS:
@@ -107,7 +108,9 @@ void canReceive() {
                 break;
 
             case ID_BRAKE_PEDAL:
-                checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC);
+                if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC)){
+                    setTempoOff();
+                }
                 break;
 
             case ID_ACCEL_PEDAL:
@@ -125,7 +128,9 @@ void canReceive() {
                 break;
 
             case ID_STEERING_W_REQ:  
-                if(!checkAndCopyArray(rxd, carState.steeringWReq, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.steeringWReq, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_BROKEN_CAR:
@@ -173,7 +178,9 @@ void canReceive() {
                 break;
 
             case ID_RACE:
-                if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_CAR_ID:

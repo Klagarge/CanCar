@@ -50,14 +50,14 @@ bool rtBrake(uint8_t brake) {
 }
 
 bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
-    static int8_t lastAccel = 0;
+    static uint8_t lastAccel = 0;
     static uint16_t lastHightRPM = 0;
     static bool reducedRPM = true;
     const uint8_t sen = 10; // perfect value = 5, but put 10 for more fun
     
     if((rpm < lastHightRPM-100) || (rpm==0)) reducedRPM = true;
     
-    if(/*rpm > RPM_LOW*/ accel >= 5){
+    if(accel >= 5){
         // Make an hysteresis for change power motor
         if((accel-sen) > lastAccel) lastAccel += 2*sen;
         if((accel+sen) < lastAccel) lastAccel -= 2*sen;
@@ -89,8 +89,24 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         if(rpm == 0) setPowerMotor(lastAccel, true);
         else setPowerMotor(lastAccel, false);
         return true;
-    } else {
+    } else if(carState.tempomat[0]){
+        uint8_t speedTarget = carState.tempomat[1];
+        if(speed < speedTarget) lastAccel += 2*sen;
+        if(speed > speedTarget) lastAccel += 2*sen;
         
+        if((rpm >= RPM_HIGH) || (speed >= SPEED_MAX)){
+            // Reduce power motor if too many RPM and change GearLever if D mode
+            lastAccel -= 2*sen;
+        }
+        
+        // Fix limit out of range
+        if(lastAccel <= PM_MIN) lastAccel = PM_MIN;
+        if(lastAccel > 100) lastAccel = 100;
+        
+        if(rpm == 0) setPowerMotor(lastAccel, true);
+        else setPowerMotor(lastAccel, false);
+        
+    } else {
         return false;
     }
 }
@@ -117,7 +133,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
             increasedRPM = false;
             lastLowRPM = rpm;
             rtChangeGearLevel(DOWNto1);
-        } else if((mode != 'D') && (rpm < RPM_LOW)) rtChangeGearLevel(DOWNto0);
+        } else if((rpm < RPM_LOW)) rtChangeGearLevel(DOWNto0);
         
     } else if (rtAccel(accel, rpm, speed)) {
         /**********************
