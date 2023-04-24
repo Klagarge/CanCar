@@ -4,26 +4,35 @@
 static uint16_t lastLowRPM = 0;
 static bool increasedRPM = true;
 
+enum changeGL{
+    UP,
+    DOWNto0,
+    DOWNto1
+};
+
 /**
  * Change actual gear level
  * @param up if true, add one gear level
  * @return true if it change
  */
-bool rtChangeGearLevel (bool up, bool accel){
+bool rtChangeGearLevel (enum changeGL type){
     uint8_t lastGearLevel = carState.gearLvl[0];
-    if(up){
-        /******
-         * ++ *
-         *****/
-        if(lastGearLevel >= 5) return false;
-        setGearLevel(lastGearLevel+1);
-    } else {
-        /******
-         * -- *
-         *****/
-        if(lastGearLevel <= 0) return false;
-        if(accel && (lastGearLevel <= 1)) return false;
-        setGearLevel(lastGearLevel-1);
+    switch(type){
+        case UP:
+            /******
+             * ++ *
+             *****/
+            if(lastGearLevel >= 5) return false;
+            setGearLevel(lastGearLevel+1);
+            break;
+        case DOWNto0:
+            if(lastGearLevel <= 0) return false;
+            setGearLevel(lastGearLevel-1);
+            break;
+        case DOWNto1:
+            if(lastGearLevel <= 1) return false;
+            setGearLevel(lastGearLevel-1);
+            break;
     }
     return true;
 }
@@ -53,21 +62,22 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         if((accel-sen) > lastAccel) lastAccel += 2*sen;
         if((accel+sen) < lastAccel) lastAccel -= 2*sen;
         
-        if(rpm >= RPM_HIGH){
+        if((rpm >= RPM_HIGH) || (speed >= SPEED_MAX)){
             // Reduce power motor if too many RPM and change GearLever if D mode
             lastAccel -= 2*sen;
-        } else if(mode=='D'){
+        }
+        if(mode=='D'){
             // Reduce GearLevel in D mode if not enough
             if((rpm<RPM_CHANGE_LOW) && increasedRPM){
                 increasedRPM = false;
                 lastLowRPM = rpm;
-                rtChangeGearLevel(false, true);
+                rtChangeGearLevel(DOWNto1);
             }
-            // Increse GearLevel in D mode if RPM are too high
+            // Increase GearLevel in D mode if RPM are too high
             if((rpm > RPM_CHANGE_HIGH) && reducedRPM){
                 reducedRPM = false;
                 lastHightRPM = rpm;
-                rtChangeGearLevel(true, true);
+                rtChangeGearLevel(UP);
             }
             if(speed == 0) setGearLevel(0);
         }
@@ -87,6 +97,7 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
 
 void rtManageMotor(uint8_t brake, uint8_t accel) {
     static uint8_t lastAccel = 0;
+    static bool wasGL0 = true;
     
     uint16_t rpm = carState.motorStatus[0];
     rpm = (rpm<<8) + carState.motorStatus[1];
@@ -105,8 +116,8 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
             // If D mode, multiple gearLevel to reduce
             increasedRPM = false;
             lastLowRPM = rpm;
-            rtChangeGearLevel(false, false);
-        } else if((mode != 'D') && (rpm < RPM_LOW)) rtChangeGearLevel(false, false);
+            rtChangeGearLevel(DOWNto1);
+        } else if((mode != 'D') && (rpm < RPM_LOW)) rtChangeGearLevel(DOWNto0);
         
     } else if (rtAccel(accel, rpm, speed)) {
         /**********************
@@ -118,6 +129,10 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
 
         // mode R with gearLevel at 1
         if(mode == 'R') setGearLevel(1);
+        if((mode=='D') && wasGL0){
+            wasGL0 = false;
+            setGearLevel(1);
+        }
             
     } else {
         /***********************
@@ -134,9 +149,17 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
             // if P or N mode, no brake
             setPowerBrake(0);
         }
+        
+        if((mode == 'D') && (rpm<RPM_CHANGE_LOW) && increasedRPM){
+            // If D mode, multiple gearLevel to reduce
+            increasedRPM = false;
+            lastLowRPM = rpm;
+            rtChangeGearLevel(DOWNto1);
+        }
 
         // if rpm is 0, start and stop function
         if(rpm == 0) setPowerMotor(PM_MIN, true);
-
     }
+    
+    if(carState.gearLvl[0] == 0) wasGL0 = true;
 }

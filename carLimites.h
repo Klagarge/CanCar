@@ -6,7 +6,7 @@
 #define RPM_CHANGE_HIGH 5000
 #define RPM_CHANGE_LOW  2000
 
-#define SPEED_MAX   280
+#define SPEED_MAX   250
 
 #define PM_MIN      12
 
