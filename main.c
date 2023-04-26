@@ -160,6 +160,7 @@ void canReceive() {
                             // The race is finished
                             break;
                     }
+                    while(1);
                 }
                 break;
 

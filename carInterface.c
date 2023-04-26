@@ -232,15 +232,11 @@ void setKmPulse(){
 void setAutoSteering(int8_t position, bool automatic){
     bool send = false;
     uint8_t tmpAutoSteering[2];
-    if(position != carState.autoSteering[0]){
-        tmpAutoSteering[0] = position;
-        send = true;
-    }
-    if(automatic != carState.autoSteering[1]){
-        tmpAutoSteering[1] = automatic;
-        send = true;
-    }
+    if(position != carState.autoSteering[0]) send = true;
+    if(automatic != carState.autoSteering[1]) send = true;
     if(send){
+        tmpAutoSteering[0] = position;
+        tmpAutoSteering[1] = automatic;
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_AUTO_STEERING, CAN_DLC_2);
         bufferObj.value = carState.autoSteering;

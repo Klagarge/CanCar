@@ -18,10 +18,10 @@ void evtStop(){
 }
 
 void evtRaceMode(){
-    if(carState.race[0] == 2){
+    if((carState.race[0] == 2) && !raceModeOn){
         raceModeOn = true;
         setAutoSteering(0, true);
-    } else {
+    } else if(raceModeOn) {
         raceModeOn = false;
         setAutoSteering(0, false);   
     }

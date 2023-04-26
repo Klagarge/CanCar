@@ -183,7 +183,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
 void rtManageWheel(){
     uint8_t right = carState.frontSensReq[1];
     uint8_t left = carState.frontSensReq[0];
-    const uint8_t wallDist = 20;
+    const uint8_t wallDist = 50;
     if((right >= wallDist) && (left >= wallDist)) return;
     uint8_t delta;
     
@@ -194,7 +194,6 @@ void rtManageWheel(){
         if(right > wallDist) right = wallDist;
         if(left > wallDist) left = wallDist;
         delta = (wallDist-left) - (wallDist-right); 
-        delta = 2
         setAutoSteering(delta, true);
         
     } else if (left > right){
