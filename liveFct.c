@@ -91,8 +91,8 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         return true;
     } else if(carState.tempomat[0]){
         uint8_t speedTarget = carState.tempomat[1];
-        if(speed < speedTarget) lastAccel += 2*sen;
-        if(speed > speedTarget) lastAccel += 2*sen;
+        if(speed < speedTarget) lastAccel += 1;
+        if(speed > speedTarget) lastAccel -= 1;
         
         if((rpm >= RPM_HIGH) || (speed >= SPEED_MAX)){
             // Reduce power motor if too many RPM and change GearLever if D mode

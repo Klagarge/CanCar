@@ -110,6 +110,7 @@ void canReceive() {
             case ID_BRAKE_PEDAL:
                 if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC)){
                     setTempoOff();
+                    carState.tempomat[0] = 0;
                 }
                 break;
 
