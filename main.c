@@ -1,6 +1,9 @@
 #include "mcc_generated_files/mcc.h"
 #include "can.h"
-#include "car.h"
+#include "carInterface.h"
+#include "eventCar.h"
+#include "liveFct.h"
+#include "carLimites.h"
 
 // functions prototype
 void copyArray(uint8_t *tmpData, uint8_t *persistantData, uint8_t size);
@@ -60,6 +63,7 @@ void main(void) {
     carState.motorStatus[1] = 0;
     carState.motorStatus[2] = 0;
     carState.motorStatus[3] = 0;
+    carState.tempomat[0] = 0;
    
         
     while (1) {
@@ -84,70 +88,106 @@ void canReceive() {
         switch(rxObj.bF.id.ID>>4){
 
             case ID_TEMPOMAT:
-                if(!checkAndCopyArray(rxd, carState.tempomat, rxObj.bF.ctrl.DLC)){
-                    // make stuff
-                }
+                checkAndCopyArray(rxd, carState.tempomat, rxObj.bF.ctrl.DLC);
                 break;
 
             case ID_GEAR_SEL:
                 if(!checkAndCopyArray(rxd, carState.gearSel, rxObj.bF.ctrl.DLC)){
-                    if(carState.contactKey[0]) uFdefineMode();
+                    if(carState.contactKey[0]) defineMode();
                 }
                 break;
 
             case ID_FRONT_SENS_REQ:  
-                if(!checkAndCopyArray(rxd, carState.frontSensReq, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.frontSensReq, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_MOTOR_STATUS:
-                if(!checkAndCopyArray(rxd, carState.motorStatus, rxObj.bF.ctrl.DLC));
+                checkAndCopyArray(rxd, carState.motorStatus, rxObj.bF.ctrl.DLC);
                 break;
 
             case ID_BRAKE_PEDAL:
                 if(!checkAndCopyArray(rxd, carState.brakePedal, rxObj.bF.ctrl.DLC)){
-                    
+                    setTempoOff();
+                    carState.tempomat[0] = 0;
                 }
-
                 break;
 
             case ID_ACCEL_PEDAL:
-                if(!checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC)) {
-                    
-                }
+                checkAndCopyArray(rxd, carState.accelPedal, rxObj.bF.ctrl.DLC);
                 break;
 
             case ID_CONTACT_KEY:
                 if(!checkAndCopyArray(rxd, carState.contactKey, rxObj.bF.ctrl.DLC)){
                     if(carState.contactKey[0]) {
-                        uFstart();
+                        evtStart();
                     } else {
-                        uFstop();
+                        evtStop();
                     }
                 }
                 break;
 
             case ID_STEERING_W_REQ:  
-                if(!checkAndCopyArray(rxd, carState.steeringWReq, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.steeringWReq, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_BROKEN_CAR:
-                if(!checkAndCopyArray(rxd, carState.brokenCar, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.brokenCar, rxObj.bF.ctrl.DLC)){
+                    switch(carState.brokenCar[0]){
+                        case 1:
+                            // Starter activated with RPM not 0
+                            break;
+                        case 2:
+                            // RPM too high (the motor RPM was over 8000 RPM)
+                            break;
+                        case 3:
+                            // Speed is too high (the car speed was over 280 km/h)
+                            break;
+                        case 4:
+                            // The gear selection is wrong (gear in P or N, delta gear > 2)
+                            break;
+                        case 5:
+                            // Power motor activated without starter
+                            break;
+                        case 6:
+                            //On race mode, car hits a wall
+                            break;
+                        case 7:
+                            // The race is finished
+                            break;
+                    }
+                }
                 break;
 
             case ID_BAD_MESSAGE:
-                if(!checkAndCopyArray(rxd, carState.badMessage, rxObj.bF.ctrl.DLC));
-                break;
-
-            case ID_SLOPE_REQ:
-                if(!checkAndCopyArray(rxd, carState.slopeReq, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.badMessage, rxObj.bF.ctrl.DLC)){
+                    switch(carState.badMessage[0]){
+                        case 0:
+                            // The length of the message is wrong
+                            break;
+                        case 1:
+                            // The value of a parameter is out of bounds
+                            break;
+                        case 2:
+                            // The message identifier is unknown
+                            break;
+                    }
+                }
                 break;
 
             case ID_RACE:
-                if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
 
             case ID_CAR_ID:
-                if(!checkAndCopyArray(rxd, carState.carID, rxObj.bF.ctrl.DLC));
+                if(!checkAndCopyArray(rxd, carState.carID, rxObj.bF.ctrl.DLC)){
+                    
+                }
                 break;
         };
     }
@@ -155,7 +195,7 @@ void canReceive() {
 
 void periodicCall(){
     if(mode != 'S'){
-        uFmanageMotor(carState.brakePedal[0], carState.accelPedal[0]);
+        rtManageMotor(carState.brakePedal[0], carState.accelPedal[0]);
         
     }
     

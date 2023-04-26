@@ -1,9 +1,10 @@
+#ifndef CARINTERFACE_H
+#define	CARINTERFACE_H
 
-#ifndef CAR_H
-#define	CAR_H
-
-#include <xc.h> 
+#include <xc.h>
 #include "can.h"
+#include <stdio.h>
+#include <string.h>
 
 const uint8_t idCar = 0x8;
 
@@ -37,7 +38,7 @@ const uint8_t idCar = 0x8;
 #define ID_KM_PULSE         0x19
 #define ID_AUTO_STEERING    0x1A
 
-struct CAR_STATE {
+typedef struct CAR_STATE {
     
     /************
      * FROM CAR *
@@ -71,48 +72,91 @@ struct CAR_STATE {
     
     
     
-};
-typedef struct CAR_STATE CAR_STATE;
+} CAR_STATE;
 
-extern CAR_STATE carState;
 typedef struct bufferType{
     CAN_TX_MSGOBJ obj;
     uint8_t *value;
 } bufferType;
 
-typedef struct stackType{
-    bufferType data;
-    struct stackType *next;
-}stackType;
-
-stackType * head = NULL;
-stackType * tail = NULL;
-
 bool pushTxObj(bufferType value);
 bool sendTxObj();
+
+extern CAR_STATE carState;
 
 /*****************
  * SET FUNCTIONS *
  ****************/
+
+/**
+ * Sets the headlights lightning level
+ * @param power The value ?0? means no headlights, the value ?50? means headlights low beam and 100 means headlights high beam
+ */
 void setLightFront(uint8_t power);
+
+/**
+ * Sets the backlights lightning level
+ * @param power The value ?0? means no backlights, the value ?50? means backlights low beam and 100 means brake lights
+ */
 void setLightBack(uint8_t power);
+
+/**
+ * Sets the time in cockpit
+ * @param hour The current hours
+ * @param minutes The current minutes
+ * @param colon The colon (between hours and minutes) 0-not visible, 1-visible
+ */
 void setTime(uint8_t hour, uint8_t minutes, bool colon);
+
+/**
+ * Sets the current automatic gear level
+ * Use this message change the current gear level. The value 0 means the wheels are not
+driven by the motor (neutral behavior). The gear level 0 to 5 must be used for the drive
+forward direction. The gear level 0 or 1 only must be used for the reverse direction. Cau-
+tion, don't change more than one gear each time.
+ * @param level The current gear level (0 to 5)
+ */
 void setGearLevel(uint8_t level);
+
+/**
+ * Used for quiet mode in laboratories
+ * @param power The motor audio level (0 to 100%)
+ * @param drive The wheels drive (0: no drive, 1: drive wheels)
+ */
 void setAudio(uint8_t power, bool drive);
+
+/**
+ * To control the motor RPM
+ * @param power The motor power applied (0 to 100%)
+ * @param starter Starter (0 or 1), set to 1 when RPM is 0, else set to 0
+ */
 void setPowerMotor(uint8_t power, bool starter);
+
+/**
+ * To control the car wheels brake
+ * @param power The car brake factor applied (0 to 100%)
+ */
 void setPowerBrake(uint8_t power);
+
+/**
+ * To stop the tempomat mode
+ */
 void setTempoOff();
+
+/**
+ * Indicate that 100 meter have passed
+ */
 void setKmPulse();
+
+/**
+ * Used to drive the car in race mode
+ * @param position Steering wheel position (-100 to 100)
+ * @param automatic 0: no automatic control, 1: automatic control
+ */
 void setAutoSteering(int8_t position, bool automatic);
 
-/********************
- * USEFUL FUNCTIONS *
- *******************/
-char mode = 'S';
-void uFdefineMode();
-void uFstart();
-void uFstop();
-void uFmanageMotor(uint8_t brake, uint8_t accel);
 
-#endif	/* CAR_H */
+char mode = 'S';
+void defineMode();
+#endif	/* CARINTERFACE_H */
 
