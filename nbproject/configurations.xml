@@ -15,7 +15,11 @@
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
       </logicalFolder>
       <itemPath>spi.h</itemPath>
-      <itemPath>car.h</itemPath>
+      <itemPath>can.h</itemPath>
+      <itemPath>eventCar.h</itemPath>
+      <itemPath>carInterface.h</itemPath>
+      <itemPath>liveFct.h</itemPath>
+      <itemPath>carLimites.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -35,12 +39,13 @@
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
       </logicalFolder>
       <itemPath>can.c</itemPath>
-      <itemPath>can.h</itemPath>
       <itemPath>can_defines.h</itemPath>
       <itemPath>can_register.h</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>spi.c</itemPath>
-      <itemPath>car.c</itemPath>
+      <itemPath>eventCar.c</itemPath>
+      <itemPath>carInterface.c</itemPath>
+      <itemPath>liveFct.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

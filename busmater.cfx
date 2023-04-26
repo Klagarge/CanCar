@@ -9,7 +9,7 @@
     <IsLogFilterLINEnabled>FALSE</IsLogFilterLINEnabled>
     <IsLoggingEnabled>FALSE</IsLoggingEnabled>
     <IsMsgIntepretationEnabled>FALSE</IsMsgIntepretationEnabled>
-    <IsOverWriteEnabled>TRUE</IsOverWriteEnabled>
+    <IsOverWriteEnabled>FALSE</IsOverWriteEnabled>
     <DisplayTimeMode>SYSTEM</DisplayTimeMode>
     <DisplayNumericMode>FALSE</DisplayNumericMode>
     <LogOnConnect_CAN>FALSE</LogOnConnect_CAN>
@@ -31,7 +31,7 @@
     <J1939_Database_Files/>
     <CAN_DIL_Section>
       <DriverName>MHS Tiny-CAN</DriverName>
-      <ControllerMode>Bus Off</ControllerMode>
+      <ControllerMode>Unknown</ControllerMode>
       <ControllerSettings>
         <Channel>
           <BaudRate>250</BaudRate>
@@ -86,19 +86,27 @@
       </ControllerSettings>
     </CAN_DIL_Section>
     <CAN_Signal_Watch>
+      <Message>
+        <Id>72</Id>
+        <Signal>RPM</Signal>
+      </Message>
+      <Message>
+        <Id>360</Id>
+        <Signal>Power</Signal>
+      </Message>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>HIDE</WindowPlacement>
-        <Top>70</Top>
-        <Left>10</Left>
-        <Right>500</Right>
-        <Bottom>300</Bottom>
+        <Top>777</Top>
+        <Left>982</Left>
+        <Right>1472</Right>
+        <Bottom>1007</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
-        <MESSAGE_COLUMN>87</MESSAGE_COLUMN>
-        <Raw_Val_Column>87</Raw_Val_Column>
-        <Physical_Val_Column>174</Physical_Val_Column>
-        <Signal_Column>87</Signal_Column>
+        <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
+        <Raw_Val_Column>94</Raw_Val_Column>
+        <Physical_Val_Column>189</Physical_Val_Column>
+        <Signal_Column>94</Signal_Column>
       </COLUMN_WIDTH>
     </CAN_Signal_Watch>
     <J1939_Signal_Watch>
@@ -111,10 +119,10 @@
         <Bottom>300</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
-        <MESSAGE_COLUMN>87</MESSAGE_COLUMN>
-        <Raw_Val_Column>87</Raw_Val_Column>
-        <Physical_Val_Column>174</Physical_Val_Column>
-        <Signal_Column>87</Signal_Column>
+        <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
+        <Raw_Val_Column>94</Raw_Val_Column>
+        <Physical_Val_Column>189</Physical_Val_Column>
+        <Signal_Column>94</Signal_Column>
       </COLUMN_WIDTH>
     </J1939_Signal_Watch>
     <LIN_Signal_Watch>
@@ -127,10 +135,10 @@
         <Bottom>300</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
-        <MESSAGE_COLUMN>87</MESSAGE_COLUMN>
-        <Raw_Val_Column>87</Raw_Val_Column>
-        <Physical_Val_Column>174</Physical_Val_Column>
-        <Signal_Column>87</Signal_Column>
+        <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
+        <Raw_Val_Column>94</Raw_Val_Column>
+        <Physical_Val_Column>189</Physical_Val_Column>
+        <Signal_Column>94</Signal_Column>
       </COLUMN_WIDTH>
     </LIN_Signal_Watch>
     <CAN_Signal_Graph>
@@ -218,7 +226,7 @@
         <ID>Time</ID>
         <Order>2</Order>
         <IsVisible>1</IsVisible>
-        <Width>95</Width>
+        <Width>193</Width>
       </COLUMN>
       <COLUMN>
         <ID>Tx/Rx</ID>
@@ -260,26 +268,26 @@
         <ID>Data Byte(s)</ID>
         <Order>9</Order>
         <IsVisible>1</IsVisible>
-        <Width>1025</Width>
+        <Width>241</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>0</IsAppend>
+      <IsAppend>1</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
-        <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
+        <WindowPlacement>SETMINPOSITION</WindowPlacement>
         <Top>0</Top>
         <Left>0</Left>
-        <Bottom>553</Bottom>
-        <Right>1614</Right>
+        <Bottom>867</Bottom>
+        <Right>976</Right>
       </Window_Position>
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </CAN_Message_Window>
@@ -368,7 +376,7 @@
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
-        <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
+        <WindowPlacement>SETMINPOSITION</WindowPlacement>
         <Top>0</Top>
         <Left>0</Left>
         <Bottom>553</Bottom>
@@ -377,9 +385,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </J1939_Message_Window>
@@ -453,7 +461,7 @@
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
-        <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
+        <WindowPlacement>SETMINPOSITION</WindowPlacement>
         <Top>0</Top>
         <Left>0</Left>
         <Bottom>553</Bottom>
@@ -462,9 +470,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </LIN_Message_Window>

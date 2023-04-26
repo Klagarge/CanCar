@@ -1,14 +1,14 @@
-/*
- * File:   car.c
- * Author: remi.heredero
- *
- * Created on March 28, 2023, 3:18 PM
- */
-#include <stdio.h>
-#include <string.h>
-#include "car.h"
+#include "carInterface.h"
 
 CAR_STATE carState;
+
+typedef struct stackType{
+    bufferType data;
+    struct stackType *next;
+}stackType;
+
+stackType * head = NULL;
+stackType * tail = NULL;
 
 CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
     CAN_TX_MSGOBJ msgObj;
@@ -23,8 +23,7 @@ CAN_TX_MSGOBJ defineTxMsgObj(uint32_t id, CAN_DLC dlc){
     return msgObj;
 }
 
-bool pushTxObj(bufferType value) {
-    stackType *temp = (stackType*) malloc(sizeof(stackType));
+bool pushTxObj(bufferType value) {    stackType *temp = (stackType*) malloc(sizeof(stackType));
     if(temp==0){
         return false;
     }
@@ -105,7 +104,7 @@ void setTime(uint8_t hour, uint8_t minutes, bool colon){
         send = true;
     }
     if(colon != carState.time[2]){
-        tmpTime[3] = colon;
+        tmpTime[2] = colon;
         send = true;
     }
     if(send){
@@ -253,12 +252,7 @@ void setAutoSteering(int8_t position, bool automatic){
 }
 
 
-
-/********************
- * USEFUL FUNCTIONS *
- *******************/
-
-void uFdefineMode(){
+void defineMode(){
     switch(carState.gearSel[0]){
         case 'P':
             mode = 'P';
@@ -281,81 +275,4 @@ void uFdefineMode(){
             setGearLevel(0);
             break;
     }
-}
-
-void uFstart(){
-    setPowerMotor(12, true);
-    setLightFront(100);
-    setLightBack(50);
-    setAudio(50, true);
-    mode = 'P';
-}
-void uFstop(){
-    mode = 'S';
-    carState.gearLvl[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
-    setGearLevel(0); 
-    setPowerMotor(0, false);
-    setLightFront(0);
-    setLightBack(0);
-    setAudio(0, false);
-}
-
-void uFmanageMotor(uint8_t brake, uint8_t accel){
-    static uint8_t lastAccel = 0;
-    
-    uint16_t rpm = carState.motorStatus[0];
-    rpm = (rpm<<8) + carState.motorStatus[1];
-    int16_t speed = carState.motorStatus[2];
-    speed = (speed<<8) + carState.motorStatus[3];
-    uint8_t gearLevel = carState.gearLvl[0];
-    const uint8_t sensitivity = 5; // perfect value = 5, but put 10 for more fun
-    
-    // Brake part
-    if(brake >= 5) {
-        setLightBack(100);
-        setPowerMotor(0, false);
-        if(rpm <= 800) setGearLevel(0);
-    } else {
-        setLightBack(50);
-        if(rpm == 0) setPowerMotor(12, true);
-        
-    }
-    setPowerBrake(brake);
-    
-    // Accel part
-    if((brake < 5) && (rpm > 800)){
-        //if(lastAccel = accel)return;
-        if((accel-sensitivity) > lastAccel) lastAccel += 2*sensitivity;
-        if((accel+sensitivity) < lastAccel) lastAccel -= 2*sensitivity;
-        if(rpm >= 7000){
-            lastAccel -= 2*sensitivity;
-        }
-
-        if(lastAccel < 0) lastAccel = 0;
-        if(lastAccel > 100) lastAccel = 100;
-
-        if (mode == 'R') {
-            if(rpm > 1200) {
-                setGearLevel(1);
-            } else {
-                setGearLevel(0);
-            }
-            
-        }
-        if (mode == 'D') {
-            if(gearLevel == 0){
-                setGearLevel(1);
-            } else {
-                if(rpm >= 5000) {
-                    // TODO check rpm go down between each gear change
-                    gearLevel++;
-                    if(gearLevel > 5) gearLevel = 5;
-                    setGearLevel(gearLevel);
-                }
-            }
-        }
-        if(lastAccel <= 12) setPowerMotor(12, false);
-        else setPowerMotor(lastAccel, false);
-    } //else if((brake < 5)
-    
 }
