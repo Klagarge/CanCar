@@ -94,27 +94,17 @@ void setLightBack(uint8_t power) {
  */
 void setTime(uint8_t hour, uint8_t minutes, bool colon){
     bool send = false;
-    uint8_t tmpTime[3];
-    if(hour != carState.time[0]){
-        tmpTime[0] = hour;
-        send = true;
-    }
-    if(minutes != carState.time[1]){
-        tmpTime[1] = minutes;
-        send = true;
-    }
-    if(colon != carState.time[2]){
-        tmpTime[2] = colon;
-        send = true;
-    }
+    if(hour != carState.time[0])    send = true;
+    if(minutes != carState.time[1]) send = true;
+    if(colon != carState.time[2])   send = true;
     if(send){
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_TIME, CAN_DLC_3);
         bufferObj.value = carState.time;
         if(pushTxObj(bufferObj)) {
-            carState.time[0] = tmpTime[0];
-            carState.time[1] = tmpTime[1];
-            carState.time[2] = tmpTime[2];
+            carState.time[0] = hour;
+            carState.time[1] = minutes;
+            carState.time[2] = colon;
         }
     }
 }
@@ -143,22 +133,15 @@ void setGearLevel(uint8_t level){
  */
 void setAudio(uint8_t power, bool drive){
     bool send = false;
-    uint8_t tmpAudio[2];
-    if(power != carState.audio[0]){
-        tmpAudio[0] = power;
-        send = true;
-    }
-    if(drive != carState.audio[1]){
-        tmpAudio[1] = drive;
-        send = true;
-    }
+    if(power != carState.audio[0])  send = true;
+    if(drive != carState.audio[1])  send = true;
     if(send){
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_AUDIO, CAN_DLC_2);
         bufferObj.value = carState.audio;
         if(pushTxObj(bufferObj)) {
-            carState.audio[0] = tmpAudio[0];
-            carState.audio[1] = tmpAudio[1];
+            carState.audio[0] = power;
+            carState.audio[1] = drive;
         }
     }
 }
@@ -172,21 +155,16 @@ void setPowerMotor(uint8_t power, bool starter){
     bool send = false;
     uint8_t tmpPowerMotor[2];
     const uint8_t sensitivity = 5;
-    if( (power < carState.pwrMotor[0]-sensitivity) || (power > carState.pwrMotor[0]+sensitivity) ){
-        tmpPowerMotor[0] = power;
-        send = true;
-    }
-    if(starter != carState.pwrMotor[1]){
-        tmpPowerMotor[1] = starter;
-        send = true;
-    }
+    if(power < carState.pwrMotor[0]-sensitivity)send = true;
+    if(power > carState.pwrMotor[0]+sensitivity)send = true;
+    if(starter != carState.pwrMotor[1])         send = true;
     if(send){
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_PWR_MOTOR, CAN_DLC_2);
         bufferObj.value = carState.pwrMotor;
         if(pushTxObj(bufferObj)){
-            carState.pwrMotor[0] = tmpPowerMotor[0];
-            carState.pwrMotor[1] = tmpPowerMotor[1];
+            carState.pwrMotor[0] = power;
+            carState.pwrMotor[1] = starter;
         }
     }
 }
@@ -231,18 +209,15 @@ void setKmPulse(){
  */
 void setAutoSteering(int8_t position, bool automatic){
     bool send = false;
-    uint8_t tmpAutoSteering[2];
     if(position != carState.autoSteering[0]) send = true;
     if(automatic != carState.autoSteering[1]) send = true;
     if(send){
-        tmpAutoSteering[0] = position;
-        tmpAutoSteering[1] = automatic;
         bufferType bufferObj;
         bufferObj.obj = defineTxMsgObj(ID_AUTO_STEERING, CAN_DLC_2);
         bufferObj.value = carState.autoSteering;
         if(pushTxObj(bufferObj)){
-            carState.autoSteering[0] = tmpAutoSteering[0];
-            carState.autoSteering[1] = tmpAutoSteering[1];
+            carState.autoSteering[0] = position;
+            carState.autoSteering[1] = automatic;
         }
     }
 }
