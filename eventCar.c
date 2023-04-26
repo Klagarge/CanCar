@@ -17,10 +17,12 @@ void evtStop(){
     setAudio(0, false);
 }
 
-void evtTempomatStart(){
-    
-}
-
-void evtTempomatStop(){
-    
+void evtRaceMode(){
+    if(carState.race[0] == 2){
+        raceModeOn = true;
+        setAutoSteering(0, true);
+    } else {
+        raceModeOn = false;
+        setAutoSteering(0, false);   
+    }
 }
