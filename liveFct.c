@@ -212,7 +212,7 @@ void rtManageWheel(){
     const uint8_t wallDist = 50;
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
-    const uint8_t speedFactor = speed/10;
+    const uint8_t speedFactor = 2;//speed/10;
     if((right >= wallDist) && (left >= wallDist)) return;
     uint8_t delta;
     
