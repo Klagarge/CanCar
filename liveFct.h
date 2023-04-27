@@ -6,6 +6,8 @@
 
 void rtManageMotor(uint8_t brake, uint8_t accel);
 void rtManageWheel();
+static bool stop  = false;
+static bool start  = false;
 
 #endif	/* LIVEFCT_H */
 

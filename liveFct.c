@@ -10,6 +10,19 @@ enum changeGL{
     DOWNto1
 };
 
+bool rtMotorOff(uint16_t rpm){
+    if(rpm >= 100) return false;
+    if(carState.pwrMotor[0] > 0) return false;
+    if(carState.pwrMotor[1] == true) return false;
+    if(!stop) return false;
+    return true;
+}
+bool rtMotorOn(uint16_t rpm){
+    if(rpm <= 400) false;
+    if(stop) return false;
+    return true;
+}
+
 /**
  * Change actual gear level
  * @param up if true, add one gear level
@@ -26,7 +39,11 @@ bool rtChangeGearLevel (enum changeGL type){
             setGearLevel(lastGearLevel+1);
             break;
         case DOWNto0:
-            if(lastGearLevel <= 0) return false;
+            if(lastGearLevel <= 0){
+                stop = true;
+                start = false;
+                return false;
+            }
             setGearLevel(lastGearLevel-1);
             break;
         case DOWNto1:
@@ -53,7 +70,7 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
     static uint8_t lastAccel = 0;
     static uint16_t lastHightRPM = 0;
     static bool reducedRPM = true;
-    const uint8_t sen = 10; // perfect value = 5, but put 10 for more fun
+    const uint8_t sen = 5; // perfect value = 5, but put 10 for more fun
     
     if((rpm < lastHightRPM-100) || (rpm==0)) reducedRPM = true;
     
@@ -79,15 +96,24 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
                 lastHightRPM = rpm;
                 rtChangeGearLevel(UP);
             }
-            if(speed == 0) setGearLevel(0);
+            if(speed <= 0){
+                if(rpm <= RPM_LOW-200) {
+                    setGearLevel(0);
+                    stop = true;
+                    start = false;
+                } else {
+                    lastAccel += 2*sen;
+                }
+            }
         }
         
         // Fix limit out of range
         if(lastAccel <= PM_MIN) lastAccel = PM_MIN;
         if(lastAccel > 100) lastAccel = 100;
         
-        if(rpm == 0) setPowerMotor(lastAccel, true);
-        else setPowerMotor(lastAccel, false);
+        if(rtMotorOff(rpm)) setPowerMotor(lastAccel, true);
+        else if(rtMotorOn(rpm)) setPowerMotor(lastAccel, false);
+        
         return true;
     } else if(carState.tempomat[0]){
         uint8_t speedTarget = carState.tempomat[1];
@@ -103,8 +129,8 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
         if(lastAccel <= PM_MIN) lastAccel = PM_MIN;
         if(lastAccel > 100) lastAccel = 100;
         
-        if(rpm == 0) setPowerMotor(lastAccel, true);
-        else setPowerMotor(lastAccel, false);
+        if(rtMotorOff(rpm)) setPowerMotor(lastAccel, true);
+        else if(rtMotorOn(rpm)) setPowerMotor(lastAccel, false);
         
     } else {
         return false;
@@ -121,6 +147,8 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
     speed = (speed<<8) + carState.motorStatus[3];
     
     if(rpm>lastLowRPM+100) increasedRPM = true;
+    if(rpm>100) stop = false;
+    if(carState.gearLvl[0] == 0) wasGL0 = true;
         
     if (rtBrake(brake)){
         /*********
@@ -174,10 +202,8 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
         }
 
         // if rpm is 0, start and stop function
-        if(rpm == 0) setPowerMotor(PM_MIN, true);
+        if(rtMotorOff(rpm)) setPowerMotor(PM_MIN, true);
     }
-    
-    if(carState.gearLvl[0] == 0) wasGL0 = true;
 }
 
 void rtManageWheel(){
