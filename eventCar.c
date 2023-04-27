@@ -9,7 +9,7 @@ void evtStart(){
 }
 void evtStop(){
     mode = 'S';
-    carState.gearLvl[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
+    carState.gearSel[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
     setGearLevel(0); 
     setPowerMotor(0, false);
     setLightFront(0);
