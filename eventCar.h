@@ -4,10 +4,11 @@
 #include <xc.h>
 #include "carInterface.h"
 
+bool raceModeOn;
+
 void evtStart();
 void evtStop();
-void evtTempomatStart();
-void evtTempomatStop();
+void evtRaceMode();
 
 #endif	/* EVENTCAR_H */
 

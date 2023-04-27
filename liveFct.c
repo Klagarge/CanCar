@@ -179,3 +179,39 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
     
     if(carState.gearLvl[0] == 0) wasGL0 = true;
 }
+
+void rtManageWheel(){
+    uint8_t right = carState.frontSensReq[1];
+    uint8_t left = carState.frontSensReq[0];
+    const uint8_t wallDist = 50;
+    int16_t speed = carState.motorStatus[2];
+    speed = (speed<<8) + carState.motorStatus[3];
+    const uint8_t speedFactor = speed/10;
+    if((right >= wallDist) && (left >= wallDist)) return;
+    uint8_t delta;
+    
+    if(right > left){
+        /********************
+         * Wall on the left *
+         *******************/
+        if(right > wallDist) right = wallDist;
+        if(left > wallDist) left = wallDist;
+        delta = (wallDist-left) - (wallDist-right); 
+        setAutoSteering(delta*speedFactor, true);
+        
+    } else if (left > right){
+        /*********************
+         * Wall on the right *
+         ********************/
+        if(right > wallDist) right = wallDist;
+        if(left > wallDist) left = wallDist;
+        delta = (wallDist-right) - (wallDist-left);
+        setAutoSteering(-(delta*speedFactor), true);
+        
+    } else {
+        /*****************************
+         * Wall on the fucking front *
+         ****************************/
+        
+    }
+}

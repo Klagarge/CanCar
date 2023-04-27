@@ -9,7 +9,7 @@ void evtStart(){
 }
 void evtStop(){
     mode = 'S';
-    carState.gearLvl[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
+    carState.gearSel[0] = 'P'; // !!!!!!!! Should not written, due to a big failure on the car design
     setGearLevel(0); 
     setPowerMotor(0, false);
     setLightFront(0);
@@ -17,10 +17,12 @@ void evtStop(){
     setAudio(0, false);
 }
 
-void evtTempomatStart(){
-    
-}
-
-void evtTempomatStop(){
-    
+void evtRaceMode(){
+    if((carState.race[0] == 2) && !raceModeOn){
+        raceModeOn = true;
+        setAutoSteering(0, true);
+    } else if(raceModeOn) {
+        raceModeOn = false;
+        setAutoSteering(0, false);   
+    }
 }

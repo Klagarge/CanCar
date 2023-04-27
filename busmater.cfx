@@ -17,7 +17,7 @@
     <LogOnConnect_LIN>FALSE</LogOnConnect_LIN>
     <Window_Position>
       <Visibility>SHOWNORMAL</Visibility>
-      <WindowPlacement>HIDE</WindowPlacement>
+      <WindowPlacement>SHOWNORMAL</WindowPlacement>
       <Top>663</Top>
       <Left>0</Left>
       <Bottom>884</Bottom>
@@ -28,6 +28,30 @@
     <CAN_Database_Files>
       <FilePath>mycar.DBF</FilePath>
     </CAN_Database_Files>
+    <Bus_Statistics>
+      <CAN_Statistics>
+        <COLUMN>
+          <ID>Parameter</ID>
+          <Order>1</Order>
+          <Width>200</Width>
+          <IsVisible>1</IsVisible>
+        </COLUMN>
+        <COLUMN>
+          <ID>Channel 1</ID>
+          <Order>2</Order>
+          <Width>90</Width>
+          <IsVisible>1</IsVisible>
+        </COLUMN>
+      </CAN_Statistics>
+      <Window_Position>
+        <Visibility>SHOWNORMAL</Visibility>
+        <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
+        <Top>149</Top>
+        <Left>305</Left>
+        <Bottom>813</Bottom>
+        <Right>727</Right>
+      </Window_Position>
+    </Bus_Statistics>
     <J1939_Database_Files/>
     <CAN_DIL_Section>
       <DriverName>MHS Tiny-CAN</DriverName>
@@ -87,23 +111,24 @@
     </CAN_DIL_Section>
     <CAN_Signal_Watch>
       <Message>
-        <Id>72</Id>
-        <Signal>RPM</Signal>
+        <Id>56</Id>
+        <Signal>FrontLeft</Signal>
+        <Signal>FrontRight</Signal>
       </Message>
       <Message>
-        <Id>360</Id>
-        <Signal>Power</Signal>
+        <Id>424</Id>
+        <Signal>position</Signal>
       </Message>
       <Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>HIDE</WindowPlacement>
-        <Top>777</Top>
-        <Left>982</Left>
-        <Right>1472</Right>
-        <Bottom>1007</Bottom>
+        <Top>798</Top>
+        <Left>1222</Left>
+        <Right>1712</Right>
+        <Bottom>1028</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
-        <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
+        <MESSAGE_COLUMN>148</MESSAGE_COLUMN>
         <Raw_Val_Column>94</Raw_Val_Column>
         <Physical_Val_Column>189</Physical_Val_Column>
         <Signal_Column>94</Signal_Column>
@@ -157,28 +182,84 @@
         <Show_Grid>TRUE</Show_Grid>
         <Display_Type>NORMAL</Display_Type>
       </GRAPH_PARAMETERS>
+      <GRAPH_ELEMENT>
+        <Message_ID>168</Message_ID>
+        <Message_Name>BROKEN_CAR</Message_Name>
+        <Frame_Format/>
+        <Element_Name>Message</Element_Name>
+        <Value_Type>Physical</Value_Type>
+        <Line_Type>SOLID</Line_Type>
+        <Line_Color>255</Line_Color>
+        <Point_Type>1</Point_Type>
+        <Point_Color>8388736</Point_Color>
+        <Visibility>TRUE</Visibility>
+        <Enable>TRUE</Enable>
+        <Display_Type>NORMAL</Display_Type>
+      </GRAPH_ELEMENT>
+      <GRAPH_ELEMENT>
+        <Message_ID>424</Message_ID>
+        <Message_Name>AUTO_STEERING</Message_Name>
+        <Frame_Format/>
+        <Element_Name>position</Element_Name>
+        <Value_Type>Physical</Value_Type>
+        <Line_Type>SOLID</Line_Type>
+        <Line_Color>65280</Line_Color>
+        <Point_Type>2</Point_Type>
+        <Point_Color>8421376</Point_Color>
+        <Visibility>TRUE</Visibility>
+        <Enable>TRUE</Enable>
+        <Display_Type>NORMAL</Display_Type>
+      </GRAPH_ELEMENT>
+      <GRAPH_ELEMENT>
+        <Message_ID>56</Message_ID>
+        <Message_Name>EXT_SENSORS</Message_Name>
+        <Frame_Format/>
+        <Element_Name>FrontLeft</Element_Name>
+        <Value_Type>Physical</Value_Type>
+        <Line_Type>SOLID</Line_Type>
+        <Line_Color>16776960</Line_Color>
+        <Point_Type>3</Point_Type>
+        <Point_Color>32896</Point_Color>
+        <Visibility>TRUE</Visibility>
+        <Enable>TRUE</Enable>
+        <Display_Type>NORMAL</Display_Type>
+      </GRAPH_ELEMENT>
+      <GRAPH_ELEMENT>
+        <Message_ID>56</Message_ID>
+        <Message_Name>EXT_SENSORS</Message_Name>
+        <Frame_Format/>
+        <Element_Name>FrontRight</Element_Name>
+        <Value_Type>Physical</Value_Type>
+        <Line_Type>SOLID</Line_Type>
+        <Line_Color>12615935</Line_Color>
+        <Point_Type>4</Point_Type>
+        <Point_Color>8454016</Point_Color>
+        <Visibility>TRUE</Visibility>
+        <Enable>TRUE</Enable>
+        <Display_Type>NORMAL</Display_Type>
+      </GRAPH_ELEMENT>
       <Window_Position>
-        <Visibility>HIDE</Visibility>
-        <Window_Position>HIDE</Window_Position>
-        <Top>-1</Top>
+        <Visibility>SHOWMINIMIZED</Visibility>
+        <Window_Position>SHOWNORMAL</Window_Position>
+        <Top>0</Top>
         <Left>0</Left>
-        <Bottom>0</Bottom>
-        <Right>0</Right>
+        <Bottom>794</Bottom>
+        <Right>1918</Right>
       </Window_Position>
       <Splitter_Window_Col_0>
-        <CxIdeal>-1</CxIdeal>
+        <CxIdeal>479</CxIdeal>
         <CxMin>0</CxMin>
       </Splitter_Window_Col_0>
       <Splitter_Window_Col_1>
-        <CxIdeal>0</CxIdeal>
+        <CxIdeal>1412</CxIdeal>
         <CxMin>0</CxMin>
       </Splitter_Window_Col_1>
       <Splitter_Window_Row_0>
-        <CxIdeal>0</CxIdeal>
+        <CxIdeal>529</CxIdeal>
         <CxMin>0</CxMin>
       </Splitter_Window_Row_0>
       <Splitter_Window_Row_1>
-        <CxIdeal>0</CxIdeal>
+        <CxIdeal>215</CxIdeal>
         <CxMin>0</CxMin>
       </Splitter_Window_Row_1>
     </CAN_Signal_Graph>
@@ -371,7 +452,7 @@
         <Width>720</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>0</IsAppend>
+      <IsAppend>1</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>
@@ -456,7 +537,7 @@
         <Width>734</Width>
       </COLUMN>
       <IsHex>1</IsHex>
-      <IsAppend>0</IsAppend>
+      <IsAppend>1</IsAppend>
       <IsInterpret>0</IsInterpret>
       <Time_Mode>SYSTEM</Time_Mode>
       <Window_Position>

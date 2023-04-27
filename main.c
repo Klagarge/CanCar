@@ -64,6 +64,7 @@ void main(void) {
     carState.motorStatus[2] = 0;
     carState.motorStatus[3] = 0;
     carState.tempomat[0] = 0;
+    raceModeOn = false;
    
         
     while (1) {
@@ -159,6 +160,7 @@ void canReceive() {
                             // The race is finished
                             break;
                     }
+                    while(1);
                 }
                 break;
 
@@ -180,7 +182,7 @@ void canReceive() {
 
             case ID_RACE:
                 if(!checkAndCopyArray(rxd, carState.race, rxObj.bF.ctrl.DLC)){
-                    
+                    evtRaceMode();
                 }
                 break;
 
@@ -196,8 +198,8 @@ void canReceive() {
 void periodicCall(){
     if(mode != 'S'){
         rtManageMotor(carState.brakePedal[0], carState.accelPedal[0]);
-        
     }
+    if(raceModeOn) rtManageWheel();
     
 }
 
