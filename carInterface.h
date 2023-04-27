@@ -76,7 +76,7 @@ typedef struct CAR_STATE {
 
 typedef struct bufferType{
     CAN_TX_MSGOBJ obj;
-    uint8_t *value;
+    uint8_t value[3];
 } bufferType;
 
 bool pushTxObj(bufferType value);
