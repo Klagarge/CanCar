@@ -1,7 +1,8 @@
 #include "eventCar.h"
+#include "carLimites.h"
 
 void evtStart(){
-    setPowerMotor(12, true);
+    setPowerMotor(PM_MIN, true);
     setLightFront(100);
     setLightBack(50);
     setAudio(50, true);

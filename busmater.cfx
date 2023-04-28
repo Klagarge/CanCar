@@ -2,7 +2,7 @@
 <BUSMASTER_CONFIGURATION>
   <Global_Configuration>
     <BUSMASTER_Version>3.2.2</BUSMASTER_Version>
-    <IsMsgFilterEnabled>FALSE</IsMsgFilterEnabled>
+    <IsMsgFilterEnabled>TRUE</IsMsgFilterEnabled>
     <IsMsgFilterEnabledLin>FALSE</IsMsgFilterEnabledLin>
     <IsReplayFilterEnabled>FALSE</IsReplayFilterEnabled>
     <IsLogFilterEnabled>FALSE</IsLogFilterEnabled>
@@ -109,6 +109,68 @@
         </Channel>
       </ControllerSettings>
     </CAN_DIL_Section>
+    <CAN_Filters>
+      <Filter>
+        <Name>filtre</Name>
+        <Type>STOP</Type>
+        <FilterMessage>
+          <IdFrom>392</IdFrom>
+          <IdTo>392</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>296</IdFrom>
+          <IdTo>296</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>280</IdFrom>
+          <IdTo>280</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>104</IdFrom>
+          <IdTo>104</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>120</IdFrom>
+          <IdTo>120</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>424</IdFrom>
+          <IdTo>424</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>56</IdFrom>
+          <IdTo>56</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+      </Filter>
+    </CAN_Filters>
     <CAN_Signal_Watch>
       <Message>
         <Id>56</Id>
@@ -128,7 +190,7 @@
         <Bottom>1028</Bottom>
       </Window_Position>
       <COLUMN_WIDTH>
-        <MESSAGE_COLUMN>148</MESSAGE_COLUMN>
+        <MESSAGE_COLUMN>94</MESSAGE_COLUMN>
         <Raw_Val_Column>94</Raw_Val_Column>
         <Physical_Val_Column>189</Physical_Val_Column>
         <Signal_Column>94</Signal_Column>
@@ -240,7 +302,7 @@
       </GRAPH_ELEMENT>
       <Window_Position>
         <Visibility>SHOWMINIMIZED</Visibility>
-        <Window_Position>SHOWNORMAL</Window_Position>
+        <Window_Position>HIDE</Window_Position>
         <Top>0</Top>
         <Left>0</Left>
         <Bottom>794</Bottom>
@@ -294,9 +356,10 @@
     </J1939_Simulated_Systems>
     <CAN_Replay/>
     <CAN_Message_Window>
-      <Append_Buffer_Size>5000</Append_Buffer_Size>
-      <Overwrite_Buffer_Size>2000</Overwrite_Buffer_Size>
-      <Display_Update_Time>100</Display_Update_Time>
+      <Append_Buffer_Size>1449225008</Append_Buffer_Size>
+      <Overwrite_Buffer_Size>24122240</Overwrite_Buffer_Size>
+      <Display_Update_Time>1449224980</Display_Update_Time>
+      <Filter IsEnabled="1">filtre</Filter>
       <COLUMN>
         <ID/>
         <Order>1</Order>
@@ -366,9 +429,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>173</Top>
+        <Top>179</Top>
         <Left>10</Left>
-        <Bottom>451</Bottom>
+        <Bottom>457</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </CAN_Message_Window>
@@ -466,9 +529,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>173</Top>
+        <Top>179</Top>
         <Left>10</Left>
-        <Bottom>451</Bottom>
+        <Bottom>457</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </J1939_Message_Window>
@@ -551,9 +614,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>173</Top>
+        <Top>179</Top>
         <Left>10</Left>
-        <Bottom>451</Bottom>
+        <Bottom>457</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </LIN_Message_Window>

@@ -1,4 +1,5 @@
 #include "carInterface.h"
+#include "liveFct.h"
 
 CAR_STATE carState;
 
@@ -171,6 +172,7 @@ void setPowerMotor(uint8_t power, bool starter){
             carState.pwrMotor[0] = power;
             carState.pwrMotor[1] = starter;
         }
+        if(starter) start = true;
     }
 }
 
