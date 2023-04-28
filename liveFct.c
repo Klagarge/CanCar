@@ -203,6 +203,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
 
         // if rpm is 0, start and stop function
         if(rtMotorOff(rpm)) setPowerMotor(PM_MIN, true);
+        else setPowerMotor(PM_MIN,false);
     }
 }
 
