@@ -241,3 +241,40 @@ void rtManageWheel(){
         
     }
 }
+
+void rtOdometer(){
+    static const double ratio = 1/360;
+    static float total = 0;
+    int16_t speed = carState.motorStatus[2];
+    speed = (speed<<8) + carState.motorStatus[3];
+    if(speed <= 0) return;
+    total += (float)(speed*ratio);
+    if(total >= 100){
+        total = 0;
+        setKmPulse();
+    }
+}
+
+void rtClock(){
+    static uint8_t count = 0;
+    if(++count < 100) return;
+    
+    static uint8_t s = 0;
+    uint8_t h = carState.time[0];
+    uint8_t m = carState.time[1];
+    bool c = carState.time[2];
+    
+    c = c ? false:true;
+    if(++s >= 60){
+        s = 0;
+        m++;
+    }
+    if(m >= 60){
+        m = 0;
+        h++;
+    } 
+    if(h >= 24){
+        h = 0;
+    }
+    setTime(h, m, c);
+}

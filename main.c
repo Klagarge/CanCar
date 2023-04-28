@@ -65,6 +65,9 @@ void main(void) {
     carState.motorStatus[3] = 0;
     carState.tempomat[0] = 0;
     raceModeOn = false;
+    carState.time[0] = 0;
+    carState.time[1] = 0;
+    carState.time[2] = 0;
    
         
     while (1) {
@@ -200,12 +203,18 @@ void periodicCall(){
         rtManageMotor(carState.brakePedal[0], carState.accelPedal[0]);
     }
     if(raceModeOn) rtManageWheel();
+    if(tick) {
+        tick = false;
+        rtOdometer();
+        rtClock();
+    }
     
 }
 
 // Called on timer0 interrupt
 void timerDone(){
     timeToSendToCan = true; // activate flag
+    tick = true; // Tick every 10 ms
     
     // reload timer
     TMR0_Reload();
