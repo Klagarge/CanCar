@@ -243,7 +243,7 @@ void rtManageWheel(){
 }
 
 void rtOdometer(){
-    static const double ratio = 1/360;
+    static const double ratio = 0.00277777777777777777777777777778;
     static float total = 0;
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
@@ -258,6 +258,7 @@ void rtOdometer(){
 void rtClock(){
     static uint8_t count = 0;
     if(++count < 100) return;
+    count = 0;
     
     static uint8_t s = 0;
     uint8_t h = carState.time[0];
