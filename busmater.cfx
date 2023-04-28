@@ -2,7 +2,7 @@
 <BUSMASTER_CONFIGURATION>
   <Global_Configuration>
     <BUSMASTER_Version>3.2.2</BUSMASTER_Version>
-    <IsMsgFilterEnabled>TRUE</IsMsgFilterEnabled>
+    <IsMsgFilterEnabled>FALSE</IsMsgFilterEnabled>
     <IsMsgFilterEnabledLin>FALSE</IsMsgFilterEnabledLin>
     <IsReplayFilterEnabled>FALSE</IsReplayFilterEnabled>
     <IsLogFilterEnabled>FALSE</IsLogFilterEnabled>
@@ -17,7 +17,7 @@
     <LogOnConnect_LIN>FALSE</LogOnConnect_LIN>
     <Window_Position>
       <Visibility>SHOWNORMAL</Visibility>
-      <WindowPlacement>SHOWNORMAL</WindowPlacement>
+      <WindowPlacement>HIDE</WindowPlacement>
       <Top>663</Top>
       <Left>0</Left>
       <Bottom>884</Bottom>
@@ -164,6 +164,14 @@
         <FilterMessage>
           <IdFrom>56</IdFrom>
           <IdTo>56</IdTo>
+          <Direction>Rx</Direction>
+          <IDType>STD</IDType>
+          <MsgType>NONRTR</MsgType>
+          <Channel>0</Channel>
+        </FilterMessage>
+        <FilterMessage>
+          <IdFrom>312</IdFrom>
+          <IdTo>313</IdTo>
           <Direction>Rx</Direction>
           <IDType>STD</IDType>
           <MsgType>NONRTR</MsgType>
@@ -429,9 +437,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </CAN_Message_Window>
@@ -529,9 +537,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </J1939_Message_Window>
@@ -614,9 +622,9 @@
       <Interpretation_Window_Position>
         <Visibility>SHOWNORMAL</Visibility>
         <WindowPlacement>RESTORETOMAXIMIZED</WindowPlacement>
-        <Top>179</Top>
+        <Top>173</Top>
         <Left>10</Left>
-        <Bottom>457</Bottom>
+        <Bottom>451</Bottom>
         <Right>359</Right>
       </Interpretation_Window_Position>
     </LIN_Message_Window>

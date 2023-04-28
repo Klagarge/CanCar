@@ -76,12 +76,16 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
     
     if(accel >= 5){
         // Make an hysteresis for change power motor
-        if((accel-sen) > lastAccel) lastAccel += 2*sen;
-        if((accel+sen) < lastAccel) lastAccel -= 2*sen;
+        if((accel-sen) > lastAccel+sen) lastAccel += 2*sen;
+        if((accel+sen) < lastAccel-sen) lastAccel -= 2*sen;
         
         if((rpm >= RPM_HIGH) || (speed >= SPEED_MAX)){
             // Reduce power motor if too many RPM and change GearLever if D mode
             lastAccel -= 2*sen;
+        }
+        if((rpm >= RPM_HIGH+500) || (speed >= SPEED_MAX+10)){
+            // Reduce power motor if too many RPM and change GearLever if D mode
+            lastAccel -= 4*sen;
         }
         if(mode=='D'){
             // Reduce GearLevel in D mode if not enough
@@ -203,6 +207,7 @@ void rtManageMotor(uint8_t brake, uint8_t accel) {
 
         // if rpm is 0, start and stop function
         if(rtMotorOff(rpm)) setPowerMotor(PM_MIN, true);
+        else setPowerMotor(PM_MIN,false);
     }
 }
 
@@ -212,7 +217,7 @@ void rtManageWheel(){
     const uint8_t wallDist = 50;
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
-    const uint8_t speedFactor = 2;//speed/10;
+    const uint8_t speedFactor = 3;//speed/20;
     if((right >= wallDist) && (left >= wallDist)) return;
     uint8_t delta;
     
@@ -247,9 +252,10 @@ void rtOdometer(){
     static float total = 0;
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
-    if(speed <= 0) return;
+    if(speed == 0) return;
+    speed = abs(speed);
     total += (float)(speed*ratio);
-    if(total >= 100){
+    if(total >= 100){ 
         total = 0;
         setKmPulse();
     }
