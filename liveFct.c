@@ -76,12 +76,16 @@ bool rtAccel(uint8_t accel, uint16_t rpm, int16_t speed) {
     
     if(accel >= 5){
         // Make an hysteresis for change power motor
-        if((accel-sen) > lastAccel) lastAccel += 2*sen;
-        if((accel+sen) < lastAccel) lastAccel -= 2*sen;
+        if((accel-sen) > lastAccel+sen) lastAccel += 2*sen;
+        if((accel+sen) < lastAccel-sen) lastAccel -= 2*sen;
         
         if((rpm >= RPM_HIGH) || (speed >= SPEED_MAX)){
             // Reduce power motor if too many RPM and change GearLever if D mode
             lastAccel -= 2*sen;
+        }
+        if((rpm >= RPM_HIGH+500) || (speed >= SPEED_MAX+10)){
+            // Reduce power motor if too many RPM and change GearLever if D mode
+            lastAccel -= 4*sen;
         }
         if(mode=='D'){
             // Reduce GearLevel in D mode if not enough
@@ -248,9 +252,10 @@ void rtOdometer(){
     static float total = 0;
     int16_t speed = carState.motorStatus[2];
     speed = (speed<<8) + carState.motorStatus[3];
-    if(speed <= 0) return;
+    if(speed == 0) return;
+    speed = abs(speed);
     total += (float)(speed*ratio);
-    if(total >= 100){
+    if(total >= 100){ 
         total = 0;
         setKmPulse();
     }
